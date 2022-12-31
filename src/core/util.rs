@@ -337,7 +337,7 @@ impl HasAfEnum for f16 {
     type AbsOutType = Self;
     type ArgOutType = Self;
     type UnaryOutType = Self;
-    type ComplexOutType = Complex<f16>;
+    type ComplexOutType = Complex<f32>;
     type MeanOutType = Self;
     type AggregateOutType = f32;
     type ProductOutType = f32;
@@ -468,6 +468,7 @@ macro_rules! implicit {
 implicit!(c64, c32 => c64);
 implicit!(c64, f64       => c64);
 implicit!(c64, f32       => c64);
+implicit!(c64, f16       => c64);
 implicit!(c64, i64       => c64);
 implicit!(c64, u64       => c64);
 implicit!(c64, i32       => c64);
@@ -481,6 +482,7 @@ implicit!(c64, u8        => c64);
 implicit!(c32, c64 => c64);
 implicit!(c32, f64       => c64);
 implicit!(c32, f32       => c32);
+implicit!(c32, f16       => c32);
 implicit!(c32, i64       => c32);
 implicit!(c32, u64       => c32);
 implicit!(c32, i32       => c32);
@@ -494,6 +496,7 @@ implicit!(c32, u8        => c32);
 implicit!(f64, c64 => c64);
 implicit!(f64, c32 => c64);
 implicit!(f64, f32       =>       f64);
+implicit!(f64, f16       =>       f64);
 implicit!(f64, i64       =>       f64);
 implicit!(f64, u64       =>       f64);
 implicit!(f64, i32       =>       f64);
@@ -507,6 +510,7 @@ implicit!(f64, u8        =>       f64);
 implicit!(f32, c64 => c64);
 implicit!(f32, c32 => c32);
 implicit!(f32, f64       =>       f64);
+implicit!(f32, f16       =>       f32);
 implicit!(f32, i64       =>       f32);
 implicit!(f32, u64       =>       f32);
 implicit!(f32, i32       =>       f32);
@@ -516,11 +520,26 @@ implicit!(f32, u16       =>       f32);
 implicit!(f32, bool      =>       f32);
 implicit!(f32, u8        =>       f32);
 
+//LHS is 16-bit floating point
+implicit!(f16, c64 => c64);
+implicit!(f16, c32 => c32);
+implicit!(f16, f64       =>       f64);
+implicit!(f16, f32       =>       f32);
+implicit!(f16, i64       =>       f16);
+implicit!(f16, u64       =>       f16);
+implicit!(f16, i32       =>       f16);
+implicit!(f16, u32       =>       f16);
+implicit!(f16, i16       =>       f16);
+implicit!(f16, u16       =>       f16);
+implicit!(f16, bool      =>       f16);
+implicit!(f16, u8        =>       f16);
+
 //LHS is 64-bit signed integer
 implicit!(i64, c64 => c64);
 implicit!(i64, c32 => c32);
 implicit!(i64, f64       =>       f64);
 implicit!(i64, f32       =>       f32);
+implicit!(i64, f16       =>       f16);
 implicit!(i64, u64       =>       u64);
 implicit!(i64, i32       =>       i64);
 implicit!(i64, u32       =>       i64);
@@ -534,6 +553,7 @@ implicit!(u64, c64 => c64);
 implicit!(u64, c32 => c32);
 implicit!(u64, f64       =>       f64);
 implicit!(u64, f32       =>       f32);
+implicit!(u64, f16       =>       f16);
 implicit!(u64, i64       =>       u64);
 implicit!(u64, i32       =>       u64);
 implicit!(u64, u32       =>       u64);
@@ -547,6 +567,7 @@ implicit!(i32, c64 => c64);
 implicit!(i32, c32 => c32);
 implicit!(i32, f64       =>       f64);
 implicit!(i32, f32       =>       f32);
+implicit!(i32, f16       =>       f16);
 implicit!(i32, i64       =>       i64);
 implicit!(i32, u64       =>       u64);
 implicit!(i32, u32       =>       u32);
@@ -560,6 +581,7 @@ implicit!(u32, c64 => c64);
 implicit!(u32, c32 => c32);
 implicit!(u32, f64       =>       f64);
 implicit!(u32, f32       =>       f32);
+implicit!(u32, f16       =>       f16);
 implicit!(u32, i64       =>       i64);
 implicit!(u32, u64       =>       u64);
 implicit!(u32, i32       =>       u32);
@@ -573,6 +595,7 @@ implicit!(i16, c64 => c64);
 implicit!(i16, c32 => c32);
 implicit!(i16, f64       =>       f64);
 implicit!(i16, f32       =>       f32);
+implicit!(i16, f16       =>       f16);
 implicit!(i16, i64       =>       i64);
 implicit!(i16, u64       =>       u64);
 implicit!(i16, i32       =>       i32);
@@ -586,6 +609,7 @@ implicit!(u16, c64 => c64);
 implicit!(u16, c32 => c32);
 implicit!(u16, f64       =>       f64);
 implicit!(u16, f32       =>       f32);
+implicit!(u16, f16       =>       f16);
 implicit!(u16, i64       =>       i64);
 implicit!(u16, u64       =>       u64);
 implicit!(u16, i32       =>       i32);
@@ -599,6 +623,7 @@ implicit!(u8, c64 => c64);
 implicit!(u8, c32 => c32);
 implicit!(u8, f64       =>       f64);
 implicit!(u8, f32       =>       f32);
+implicit!(u8, f16       =>       f16);
 implicit!(u8, i64       =>       i64);
 implicit!(u8, u64       =>       u64);
 implicit!(u8, i32       =>       i32);
@@ -612,6 +637,7 @@ implicit!(bool, c64 => c64);
 implicit!(bool, c32 => c32);
 implicit!(bool, f64       =>       f64);
 implicit!(bool, f32       =>       f32);
+implicit!(bool, f16       =>       f16);
 implicit!(bool, i64       =>       i64);
 implicit!(bool, u64       =>       u64);
 implicit!(bool, i32       =>       i32);
@@ -652,12 +678,18 @@ impl FloatingPoint for f32 {
         true
     }
 }
+impl FloatingPoint for f16 {
+    fn is_real() -> bool {
+        true
+    }
+}
 
 ///Trait qualifier to accept real data(numbers)
 pub trait RealFloating: HasAfEnum {}
 
 impl RealFloating for f64 {}
 impl RealFloating for f32 {}
+impl RealFloating for f16 {}
 
 ///Trait qualifier to accept complex data(numbers)
 pub trait ComplexFloating: HasAfEnum {}
@@ -670,6 +702,7 @@ pub trait RealNumber: HasAfEnum {}
 
 impl RealNumber for f64 {}
 impl RealNumber for f32 {}
+impl RealNumber for f16 {}
 impl RealNumber for i32 {}
 impl RealNumber for u32 {}
 impl RealNumber for i16 {}
@@ -830,6 +863,8 @@ impl Fromf64 for u32  { fn fromf64(value: f64) -> Self { value as Self }}
 #[rustfmt::skip]
 impl Fromf64 for i32  { fn fromf64(value: f64) -> Self { value as Self }}
 #[rustfmt::skip]
+impl Fromf64 for f16  { fn fromf64(value: f64) -> Self { f16::from_f64(value) }}
+#[rustfmt::skip]
 impl Fromf64 for u16  { fn fromf64(value: f64) -> Self { value as Self }}
 #[rustfmt::skip]
 impl Fromf64 for i16  { fn fromf64(value: f64) -> Self { value as Self }}
@@ -847,6 +882,7 @@ impl IndexableType for u64 {}
 impl IndexableType for f32 {}
 impl IndexableType for i32 {}
 impl IndexableType for u32 {}
+impl IndexableType for f16 {}
 impl IndexableType for i16 {}
 impl IndexableType for u16 {}
 impl IndexableType for u8 {}
